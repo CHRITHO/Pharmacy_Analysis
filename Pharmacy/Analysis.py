@@ -16,10 +16,7 @@ df = pd.read_csv(file_path, delimiter='\t')
 print(df.head())
 print(df.info())  # Check data types and missing values
 
-# ====================================
 # 1. Data Cleaning and Preparation
-# ====================================
-
 # Drop irrelevant or empty columns (if any are present)
 df_cleaned = df.drop(columns=['ADDRESS2', 'CONTHOW', 'GEODATE', 'GEOHOW', 'HSIPTHEMES', 'PHONELOC', 'QC_QA', 'PROVID_11', 'PROVID_12', 'PROVID_20', 'PROVID_21'])
 
@@ -34,10 +31,7 @@ df_cleaned = df_cleaned.dropna(subset=['X', 'Y', 'STATE', 'ZIP'])
 df_cleaned['X'] = pd.to_numeric(df_cleaned['X'], errors='coerce')
 df_cleaned['Y'] = pd.to_numeric(df_cleaned['Y'], errors='coerce')
 
-# ====================================
 # 2. Geospatial Analysis - Heatmap of Pharmacies
-# ====================================
-
 # Create a GeoDataFrame for geospatial analysis
 gdf = gpd.GeoDataFrame(df_cleaned, geometry=gpd.points_from_xy(df_cleaned['X'], df_cleaned['Y']))
 
@@ -50,10 +44,7 @@ HeatMap(pharmacy_locations.values.tolist(), radius=10).add_to(heat_map)
 # Save the heatmap
 heat_map.save('D:\CODING-CLASS\Pharmacy_Analysis\Pharmacy\pharmacy_heatmap.html')
 
-# ====================================
 # 3. Aggregation by Region (State/County)
-# ====================================
-
 # Aggregating pharmacies by state
 state_count = df_cleaned.groupby('STATE').size().reset_index(name='Pharmacy_Count')
 print(state_count)
@@ -72,10 +63,7 @@ plt.tight_layout()  # Ensures proper layout
 plt.savefig('D:\CODING-CLASS\Pharmacy_Analysis\Pharmacy\pharmacies_by_state.png')  # Save the plot
 plt.show()
 
-# ====================================
 # 4. Ownership Structure (Chain vs Independent)
-# ====================================
-
 # Check for chain or independent pharmacies based on ORGAN_NAME or ENT_TYPE
 ownership_structure = df_cleaned.groupby(['ENT_TYPE', 'STATE']).size().reset_index(name='Count')
 
@@ -91,10 +79,7 @@ plt.tight_layout()  # Ensures proper layout
 plt.savefig('D:\CODING-CLASS\Pharmacy_Analysis\Pharmacy\ownership_by_state.png')  # Save the plot
 plt.show()
 
-# ====================================
 # 5. Pharmacy Services and NAICS Code Analysis
-# ====================================
-
 # Check NAICS code descriptions
 naics_count = df_cleaned.groupby('NAICSDESCR').size().reset_index(name='Count')
 
@@ -149,10 +134,7 @@ plt.tight_layout()  # Ensure proper layout
 plt.savefig('D:/CODING-CLASS/Pharmacy_Analysis/Pharmacy/pharmacies_per_state.png')  # Save the plot
 plt.show()
 
-# ====================================
 # 7. Export Cleaned Data (Optional)
-# ====================================
-
 # Save the cleaned dataset to a new CSV
 df_cleaned.to_csv('D:\CODING-CLASS\Pharmacy_Analysis\Pharmacy\cleaned_pharmacies.csv', index=False)
 
