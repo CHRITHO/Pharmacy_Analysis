@@ -7,8 +7,9 @@ import folium
 from folium.plugins import HeatMap
 
 # Load the dataset
-file_path = '/mnt/data/pharmacies-QueryResult.csv'  # Update the file path if necessary
-df = pd.read_csv(file_path)
+file_path = 'D:\CODING-CLASS\Pharmacy_Analysis\Pharmacy\Pharmacies.csv'  # Update the file path if necessary
+df = pd.read_csv(file_path, delimiter='\t')
+
 
 # Inspect the data
 print(df.head())
@@ -45,9 +46,8 @@ pharmacy_locations = df_cleaned[['Y', 'X']].dropna()
 heat_map = folium.Map(location=[37.0902, -95.7129], zoom_start=4)  # Centered on the U.S.
 HeatMap(pharmacy_locations.values.tolist(), radius=10).add_to(heat_map)
 
-# Save and display the heatmap
+# Save the heatmap
 heat_map.save('D:\CODING-CLASS\Pharmacy_Analysis\Pharmacy\pharmacy_heatmap.html')
-heat_map  # To display in notebook
 
 # ====================================
 # 3. Aggregation by Region (State/County)
@@ -61,12 +61,14 @@ print(state_count)
 county_count = df_cleaned.groupby('COUNTY').size().reset_index(name='Pharmacy_Count')
 print(county_count)
 
-# Plot the number of pharmacies by state
+# Plot the number of pharmacies by state and save the plot
 plt.figure(figsize=(12, 8))
 sns.barplot(x='Pharmacy_Count', y='STATE', data=state_count.sort_values(by='Pharmacy_Count', ascending=False))
 plt.title('Number of Pharmacies by State')
 plt.xlabel('Number of Pharmacies')
 plt.ylabel('State')
+plt.tight_layout()  # Ensures proper layout
+plt.savefig('D:\CODING-CLASS\Pharmacy_Analysis\Pharmacy\pharmacies_by_state.png')  # Save the plot
 plt.show()
 
 # ====================================
@@ -76,7 +78,7 @@ plt.show()
 # Check for chain or independent pharmacies based on ORGAN_NAME or ENT_TYPE
 ownership_structure = df_cleaned.groupby(['ENT_TYPE', 'STATE']).size().reset_index(name='Count')
 
-# Plot ownership type across states
+# Plot ownership type across states and save the plot
 plt.figure(figsize=(14, 8))
 sns.countplot(x='STATE', hue='ENT_TYPE', data=df_cleaned)
 plt.title('Pharmacy Ownership Type by State')
@@ -84,6 +86,8 @@ plt.xlabel('State')
 plt.ylabel('Count')
 plt.xticks(rotation=90)
 plt.legend(title='Ownership Type')
+plt.tight_layout()  # Ensures proper layout
+plt.savefig('D:\CODING-CLASS\Pharmacy_Analysis\Pharmacy\ownership_by_state.png')  # Save the plot
 plt.show()
 
 # ====================================
@@ -93,30 +97,55 @@ plt.show()
 # Check NAICS code descriptions
 naics_count = df_cleaned.groupby('NAICSDESCR').size().reset_index(name='Count')
 
-# Plot pharmacy services by NAICS code
+# Plot pharmacy services by NAICS code and save the plot
 plt.figure(figsize=(12, 8))
 sns.barplot(x='Count', y='NAICSDESCR', data=naics_count.sort_values(by='Count', ascending=False))
 plt.title('Pharmacy Services by NAICS Description')
 plt.xlabel('Number of Pharmacies')
 plt.ylabel('Service Type')
+plt.tight_layout()  # Ensures proper layout
+plt.savefig('D:\CODING-CLASS\Pharmacy_Analysis\Pharmacy\pharmacy_services_by_naics.png')  # Save the plot
 plt.show()
 
-# ====================================
-# 6. Temporal Analysis (if applicable)
-# ====================================
+# Group the data by COUNTY and count the number of pharmacies
+county_pharmacies = df_cleaned.groupby('COUNTY').size().reset_index(name='Count')
 
-# Check for the `CONTDATE` column for time-based analysis
-df_cleaned['CONTDATE'] = pd.to_datetime(df_cleaned['CONTDATE'], errors='coerce')
+# Sort the data by the number of pharmacies (optional)
+county_pharmacies = county_pharmacies.sort_values(by='Count', ascending=False)
 
-# Plotting updates over time
-df_cleaned['YEAR'] = df_cleaned['CONTDATE'].dt.year
-yearly_updates = df_cleaned.groupby('YEAR').size().reset_index(name='Count')
+# Plotting the number of pharmacies per county (Top 20)
+plt.figure(figsize=(12, 8))
+sns.barplot(x='Count', y='COUNTY', data=county_pharmacies.head(20), hue='COUNTY', palette='plasma', legend=False)
 
-plt.figure(figsize=(10, 6))
-sns.lineplot(x='YEAR', y='Count', data=yearly_updates)
-plt.title('Number of Pharmacy Updates Over Time')
-plt.xlabel('Year')
-plt.ylabel('Number of Updates')
+
+# Add labels and title
+plt.title('Number of Pharmacies per County (Top 20)', fontsize=16)
+plt.xlabel('Number of Pharmacies', fontsize=12)
+plt.ylabel('County', fontsize=12)
+
+# Display the plot
+plt.tight_layout()  # Ensures proper layout
+plt.savefig('D:/CODING-CLASS/Pharmacy_Analysis/Pharmacy/pharmacies_per_county.png')  # Save the plot
+plt.show()
+
+# Group the data by STATE and count the number of pharmacies
+state_pharmacies = df_cleaned.groupby('STATE').size().reset_index(name='Count')
+
+# Sort the data by the number of pharmacies (optional)
+state_pharmacies = state_pharmacies.sort_values(by='Count', ascending=False)
+
+# Plotting the number of pharmacies per state
+plt.figure(figsize=(12, 8))
+sns.barplot(x='Count', y='STATE', data=state_pharmacies, hue='STATE', palette='plasma', legend=False)
+
+# Add labels and title
+plt.title('Number of Pharmacies per State', fontsize=16)
+plt.xlabel('Number of Pharmacies', fontsize=12)
+plt.ylabel('State', fontsize=12)
+
+# Display the plot
+plt.tight_layout()  # Ensure proper layout
+plt.savefig('D:/CODING-CLASS/Pharmacy_Analysis/Pharmacy/pharmacies_per_state.png')  # Save the plot
 plt.show()
 
 # ====================================
