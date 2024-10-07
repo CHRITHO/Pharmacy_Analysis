@@ -1,7 +1,3 @@
-Here’s a **README** template that you can include with your project. It provides an overview of the analysis, dependencies, and instructions for running the script.
-
----
-
 # **Pharmacy Analysis Project**
 
 This project involves the analysis of a dataset of pharmacies across the United States and its territories. The primary aim of the analysis is to clean the dataset, perform geospatial and statistical analysis, and visualize the results in various formats.
