@@ -2,6 +2,7 @@
 import pandas as pd
 import geopandas as gpd
 import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 import seaborn as sns
 import folium
 from folium.plugins import HeatMap
@@ -155,3 +156,42 @@ plt.show()
 # Save the cleaned dataset to a new CSV
 df_cleaned.to_csv('D:\CODING-CLASS\Pharmacy_Analysis\Pharmacy\cleaned_pharmacies.csv', index=False)
 
+img1_path = 'D:/CODING-CLASS/Pharmacy_Analysis/Pharmacy/pharmacies_by_state.png'
+img2_path = 'D:/CODING-CLASS/Pharmacy_Analysis/Pharmacy/ownership_by_state.png'
+img3_path = 'D:/CODING-CLASS/Pharmacy_Analysis/Pharmacy/pharmacy_services_by_naics.png'
+img4_path = 'D:/CODING-CLASS/Pharmacy_Analysis/Pharmacy/pharmacies_per_county.png'
+
+# Load images
+img1 = mpimg.imread(img1_path)
+img2 = mpimg.imread(img2_path)
+img3 = mpimg.imread(img3_path)
+img4 = mpimg.imread(img4_path)
+
+# Create subplots
+fig, axes = plt.subplots(2, 2, figsize=(15, 12))  # 2 rows, 2 columns
+
+# Plot each image in a subplot
+axes[0, 0].imshow(img1)
+axes[0, 0].axis('off')  # Hide axis
+axes[0, 0].set_title('Pharmacies by State')
+
+axes[0, 1].imshow(img2)
+axes[0, 1].axis('off')
+axes[0, 1].set_title('Ownership by State')
+
+axes[1, 0].imshow(img3)
+axes[1, 0].axis('off')
+axes[1, 0].set_title('Pharmacy Services by NAICS')
+
+axes[1, 1].imshow(img4)
+axes[1, 1].axis('off')
+axes[1, 1].set_title('Pharmacies per County')
+
+# Adjust layout for better spacing
+plt.tight_layout()
+
+# Save the merged plot
+plt.savefig('D:/CODING-CLASS/Pharmacy_Analysis/Pharmacy/merged_pharmacy_plots.png')
+
+# Show the merged plot
+plt.show()
