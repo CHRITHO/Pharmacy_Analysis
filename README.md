@@ -1,3 +1,4 @@
+
 # **Pharmacy Analysis Project**
 
 This project involves the analysis of a dataset of pharmacies across the United States and its territories. The primary aim of the analysis is to clean the dataset, perform geospatial and statistical analysis, and visualize the results in various formats.
